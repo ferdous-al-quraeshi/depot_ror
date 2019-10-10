@@ -6,8 +6,10 @@ one:
   image_url: MyString
   price: 9.99
 
-two:
-  title: MyString
-  description: MyText
-  image_url: MyString
-  price: 9.99
+rails:
+  title: Agile Web Development with Rails 5
+  description: Get the comprehensive, insider information you need for Rails 5 with the new edition of this award-winning classic.
+  price: 49
+  image_url: sam-ruby.png
+  
+

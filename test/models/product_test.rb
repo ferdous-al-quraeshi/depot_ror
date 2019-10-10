@@ -1,6 +1,9 @@
 require 'test_helper'
 
 class ProductTest < ActiveSupport::TestCase
+  
+  fixtures :products
+
   # test "the truth" do
   #   assert true
   # end
@@ -24,12 +27,12 @@ class ProductTest < ActiveSupport::TestCase
     )
     
     product.price = -1
-    assert product.valid?
+    assert product.invalid?
     assert_equal ["must be greater than or equal to 0.01"],
       product.errors[:price]
     
     product.price = 0
-    assert product.valid?
+    assert product.invalid?
     assert_equal ["must be greater than 0"],
       product.errors[:price]
     
@@ -45,22 +48,36 @@ class ProductTest < ActiveSupport::TestCase
       price: 3,
       image_url: image_url)
   end
-  
+    
   test 'image url' do
-      ok = %w{
-        image.jpg image.png image.gif IMAGE.JPG IMAGE.PNG IMAGE.GIF
-      }
-      bad = %w{
-        doc.doc doc.gif/more doc.gif.more
-      }
-
-      ok.each do |name|
-        assert new_product(name).valid?, "#{name} shouldn't be invalid"
-      end
-      
-      bad.each do |name|
-        assert new_product(name).invalid?, "#{name} shouldn't be valid"
-      end
+    ok = %w{
+      image.jpg image.png image.gif IMAGE.JPG IMAGE.PNG IMAGE.GIF
+    }
+    bad = %w{
+      doc.doc doc.gif/more doc.gif.more
+    }
+    
+    ok.each do |name|
+      assert new_product(name).valid?, "#{name} shouldn't be invalid"
+    end
+    
+    bad.each do |name|
+      assert new_product(name).invalid?, "#{name} shouldn't be valid"
+    end
   end
 
+
+  # Testing... Titles are unique.
+  test 'product is not valid without a unique title' do
+    product = Product.new(
+      title: products(:rails).title,
+      description: "some description",
+      price: 50,
+      image_url: 'agile-rails.png'
+    )
+
+    assert product.invalid?
+    assert_equal [I18n.translate('errors.messages.taken')],
+      product.errors[:title]
+  end
 end
